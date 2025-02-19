@@ -96,5 +96,3 @@ if __name__ == "__main__":
     if download_image(image_url, local_image_path):
         display_image(local_image_path, display_time=100)
         clean_up_image(local_image_path)
-        time.sleep(1)
-        self_delete(script_path=script_path)
