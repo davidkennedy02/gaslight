@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 import requests
 
 # Configuration
-image_url = "https://miro.medium.com/v2/resize:fit:1400/0*uQo-YVFfoMp9Eai9"
+image_url = "https://i.ytimg.com/vi/y_qkfiVEFqQ/maxresdefault.jpg"
 
 # Determine the temp directory based on the OS
 temp_dir = os.getenv("TEMP") if platform.system() == "Windows" else "/tmp"
