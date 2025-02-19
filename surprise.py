@@ -11,7 +11,7 @@ image_url = "https://i.ytimg.com/vi/y_qkfiVEFqQ/maxresdefault.jpg"
 # Determine the temp directory based on the OS
 temp_dir = os.getenv("TEMP") if platform.system() == "Windows" else "/tmp"
 local_image_path = os.path.join(temp_dir, "downloaded_image.png")
-
+script_path = os.path.abspath(__file__)  # Get the current script's file path
 
 def download_image(image_url, save_path):
     """ Download an image from the internet and save it locally. """
@@ -80,6 +80,14 @@ def clean_up_image(file_path):
             os.remove(file_path)
     except Exception as e:
         print(f"Cleanup failed: {e}")
+        
+
+def self_delete(script_path):
+    """Deletes the script itself after execution."""
+    try:
+        os.remove(script_path)
+    except:
+        pass  # Fail silently
 
 
 if __name__ == "__main__":
@@ -88,3 +96,5 @@ if __name__ == "__main__":
     if download_image(image_url, local_image_path):
         display_image(local_image_path, display_time=100)
         clean_up_image(local_image_path)
+        time.sleep(1)
+        self_delete(script_path=script_path)
